@@ -1,19 +1,22 @@
 import { useState } from "react";
 import "./App.css";
+import { useFibonacci } from "./hooks/useFibonacci";
 
 function App() {
   const [userInput, setUserInput] = useState<string>("");
 
   const [displayNumber, setDisplayNumber] = useState(0);
 
-  let fibonacciSequence: number[] = [];
+  // causing too many rerenders
+  const fibonacciSequence = useFibonacci(displayNumber);
 
   function handleSubmit(e: any) {
     e.preventDefault();
-
+    // edge cases: 'e' and submitting empty field
+    // should not accept negative numbers, 'e'(by itself), undefined or empty space
     setDisplayNumber(parseInt(userInput));
   }
-
+  // should be 1 func for both + and -
   function addNumber(e: { preventDefault: () => void }) {
     e.preventDefault();
     setDisplayNumber(displayNumber + 1);
@@ -27,16 +30,7 @@ function App() {
   function calculateFibonacci(e: { preventDefault: () => void }) {
     e.preventDefault();
 
-    for (let i = 0; i <= displayNumber; i++) {
-      if (i === 0 || i === 1) {
-        fibonacciSequence.push(i);
-      } else {
-        fibonacciSequence.push(
-          fibonacciSequence[i - 1] + fibonacciSequence[i - 2]
-        );
-      }
-    }
-    console.log(fibonacciSequence);
+    // should only use useFibonacci after clicking 'calculate' button
   }
 
   return (
@@ -54,13 +48,14 @@ function App() {
               onChange={(e) => setUserInput(e.target.value)}
             ></input>
             <button onClick={handleSubmit}>Submit</button>
-            <p>{displayNumber}</p>
-            <button onClick={addNumber}>+</button>
-            <button onClick={subtractNumber}>-</button>
-            <button onClick={calculateFibonacci}>Calculate</button>
           </label>
-          <br />
         </form>
+
+        <p>{displayNumber}</p>
+        <button onClick={addNumber}>+</button>
+        <button onClick={subtractNumber}>-</button>
+        <button onClick={calculateFibonacci}>Calculate</button>
+        <br />
 
         <p>{fibonacciSequence}</p>
       </header>

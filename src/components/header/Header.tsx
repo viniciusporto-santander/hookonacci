@@ -1,6 +1,30 @@
+import { Dispatch, SetStateAction } from "react";
 import { Spacer } from "../spacer/Spacer";
 
-export function Header() {
+export type Event = { preventDefault: () => void };
+type Operation = "+" | "-";
+
+type Props = {
+  userInput: string;
+  setUserInput: Dispatch<SetStateAction<string>>;
+  displayNumber: number;
+  setDisplayNumber: Dispatch<SetStateAction<number>>;
+};
+
+export function Header(props: Props) {
+  // should not go negative
+  function addOrSubtract(e: Event, operation: Operation) {
+    e.preventDefault();
+    operation === "+"
+      ? props.setDisplayNumber(props.displayNumber + 1)
+      : props.setDisplayNumber(props.displayNumber - 1);
+  }
+
+  function handleSubmit(e: Event) {
+    e.preventDefault();
+    props.setDisplayNumber(parseInt(props.userInput));
+  }
+
   return (
     <header className="App-header">
       <h1>Fibonacci hook</h1>
@@ -11,8 +35,8 @@ export function Header() {
             <input
               type="number"
               autoFocus
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
+              value={props.userInput}
+              onChange={(e) => props.setUserInput(e.target.value)}
             ></input>
             <Spacer></Spacer>
             <button onClick={handleSubmit}>Submit</button>
@@ -33,6 +57,7 @@ export function Header() {
       >
         -
       </button>
+      <p>You entered: {props.displayNumber}</p>
     </header>
   );
 }
